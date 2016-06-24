@@ -1,0 +1,4 @@
+Analysis done.
+Computing time was: 29.249004 s
+The signal has a total of 11733 events:
+11733	(100.0%)	1-level events.
