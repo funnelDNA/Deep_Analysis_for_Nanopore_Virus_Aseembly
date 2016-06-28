@@ -5,8 +5,7 @@ hold off;
 upLim = 0.01;
 lowLim = 0;
 binN = 150;
-cutThickness = 3.5; % tentative cutoff, to make data cleaner before fitting. unit: sigma
-maxSigma = 0.0005;
+cutThickness = 1.5; % tentative cutoff, to make data cleaner before fitting. unit: sigma
 %%
     tempDel = abs(aveDel);
     tempDel(tempDel<=lowLim | tempDel>=upLim) = [];
@@ -34,25 +33,18 @@ while abs(newT3P - T3Position) > epslon || abs(newT4P - T4Position) > epslon
     
     cutPL = mu - cutThickness*sigma;     cutPR = mu + cutThickness*sigma;
     N = Nt; P = Pt;
-    N(P>cutPL & P<cutPR) = [];   P(P>cutPL & P<cutPR) = [];
+    N(P>cutPL & P<cutPR) = 0;   %P(P>cutPL & P<cutPR) = [];
     stdTempDel = std(tempDel)*2^0.5;
     coEff = fitHBV( N, P, stdTempDel );
     mu = coEff(2);
     sigma = coEff(3)/2^0.5;
-    
-    if sigma > maxSigma
-        cutPL = lowLim;
-        cutPR = mu;
-        Pos1 = mu;
-    else    
-        plot([mu - where2cut*sigma mu - where2cut*sigma],[0 coEff(1)],'k');
-        plot([mu + where2cut*sigma mu + where2cut*sigma],[0 coEff(1)],'k');
-        Pos1 = mu;    sigma1 = sigma;
+    plot([mu - where2cut*sigma mu - where2cut*sigma],[0 coEff(1)],'k');
+    plot([mu + where2cut*sigma mu + where2cut*sigma],[0 coEff(1)],'k');
+    Pos1 = mu;    sigma1 = sigma;
 
-        cutPL = mu - cutThickness*sigma;     cutPR = mu + cutThickness*sigma;
-    end
+    cutPL = mu - cutThickness*sigma;     cutPR = mu + cutThickness*sigma;
     N = Nt; P = Pt;
-    N(P>cutPL & P<cutPR) = [];   P(P>cutPL & P<cutPR) = [];
+    N(P>cutPL & P<cutPR) = 0;   %P(P>cutPL & P<cutPR) = [];
     coEff = fitHBV( N, P, stdTempDel );
     mu = coEff(2);
     sigma = coEff(3)/2^0.5;
@@ -64,7 +56,6 @@ while abs(newT3P - T3Position) > epslon || abs(newT4P - T4Position) > epslon
     newT4P = max([Pos1 Pos2]);
     
 end
-drawnow;
 if Pos1<Pos2
     T3Position = Pos1;
     T3sigma = sigma1;
