@@ -83,11 +83,12 @@ for ii = 1:length(allFiles)
         tempP2p = zeros(1,nPores-1);
         endEarly = 0;
         for kk = 1:nPores-1
+            if jj > length(dataIndex) continue; end
             tempAmp(kk) = amp(dataIndex(jj));
             tempDel(kk) = del(dataIndex(jj));
             tempDwell(kk) = dwell(dataIndex(jj));
             tempP2p(kk) = ppTime(dataIndex(jj));
-            if (kk<nPores-1)
+            if (kk<nPores-1) && jj < length(dataIndex)
                 if dataIndex(jj+1) > dataIndex(jj)+1
                     endEarly = 1;
                     jj = jj+1;
